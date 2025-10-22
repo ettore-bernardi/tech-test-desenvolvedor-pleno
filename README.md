@@ -74,7 +74,10 @@ O projeto deve ter uma interface web simples em Rails (HTML + Bootstrap), conten
   - Passos para rodar o projeto (via Docker).  
   - Como subir o ambiente (Redis, Sidekiq, Rails).  
   - Como enviar um e-mail `.eml` para processamento.  
-  - Como visualizar os resultados (customers + logs).  
+  - Como visualizar os resultados (customers + logs).
+  - Video explicativo
+    - Demonstrar o uso do sistema
+    - Explicar principais pontos do código e decisõe técnicas.
 
 ---
 
