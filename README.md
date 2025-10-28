@@ -26,7 +26,7 @@ Os parsers devem ser capazes de extrair do corpo do e-mail:
 - Código do produto de interesse  
 - Assunto do e-mail  
 
-Caso não seja possível extrair **nenhuma informação de contato do cliente**, o processamento deve ser considerado **falho**.
+Caso não seja possível extrair **nenhuma informação de contato do cliente (e-mail ou telefone)**, o processamento deve ser considerado **falho**.
 
 ---
 
