@@ -93,7 +93,8 @@ O projeto deve ter uma interface web simples em Rails (HTML + Bootstrap), conten
 ## O que será avaliado?
 - **Testes automatizados**  
   - Iremos executar os testes localmente, tenha certeza que eles estão passando antes de entregar o projeto.  
-  - Se o projeto não tiver testes ou estiverem em branco ou falhando, **não avaliaremos os demais requisitos**.  
+  - Se o projeto não tiver testes ou estiverem em branco ou falhando, **não avaliaremos os demais requisitos**.
+- **Aplicação correta das regras de negócio** 
 - **Simplicidade, clareza e estilo do código**  
 - **Arquitetura do código**  
 - **Facilidade de adicionar novos parsers**  
