@@ -10,91 +10,75 @@ jobs:
   test:
     name: Run RSpec
     runs-on: ubuntu-latest
+
+    # Se seu app está dentro de src/, definimos working-directory para todos os passos.
+    # Se NÃO estiver em src, remova todo o bloco "defaults" abaixo.
+    defaults:
+      run:
+        working-directory: src
+
     env:
       RAILS_ENV: test
-      # DB credentials used in the generated config/database.yml
-      POSTGRES_DB: test_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST: postgres
-
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d test_db -h localhost" 
-          --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
-          bundler-cache: false   # usamos cache manualmente abaixo
+          bundler-cache: false
 
       - name: Cache gems
         uses: actions/cache@v4
         with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+          # chave baseada no Gemfile.lock dentro de src/
+          key: ${{ runner.os }}-gems-${{ hashFiles('src/Gemfile.lock') }}
+          path: src/vendor/bundle
 
-      - name: Install dependencies
+      - name: Install system packages for sqlite
+        run: sudo apt-get update -yqq && sudo apt-get install -yqq libsqlite3-dev sqlite3 build-essential pkg-config
+
+      - name: Install gems
         run: |
           gem install bundler
+          cd src
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
-      - name: Create config/database.yml
+      - name: Create config/database.yml (sqlite for test)
         run: |
-          mkdir -p config
-          cat > config/database.yml <<'YAML'
+          mkdir -p src/config
+          cat > src/config/database.yml <<'YML'
           test:
-            adapter: postgresql
-            encoding: unicode
-            database: <%= ENV['POSTGRES_DB'] || 'test_db' %>
-            username: <%= ENV['POSTGRES_USER'] || 'postgres' %>
-            password: <%= ENV['POSTGRES_PASSWORD'] || 'postgres' %>
-            host: <%= ENV['POSTGRES_HOST'] || 'postgres' %>
-            port: 5432
+            adapter: sqlite3
+            database: db/test.sqlite3
             pool: 5
-          YAML
+            timeout: 5000
+          YML
 
-      - name: Wait for Postgres to be ready
-        run: |
-          for i in {1..15}; do
-            pg_isready -h ${{ env.POSTGRES_HOST }} -U ${{ env.POSTGRES_USER }} -d ${{ env.POSTGRES_DB }} && break
-            echo "Waiting for postgres..."
-            sleep 2
-          done
+      - name: Ensure db folder exists
+        run: mkdir -p src/db
 
-      - name: Prepare DB (create + migrate)
+      - name: Prepare test DB (load schema)
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@${{ env.POSTGRES_HOST }}:5432/${{ env.POSTGRES_DB }}
         run: |
-          bundle exec rails db:create db:migrate RAILS_ENV=test
+          cd src
+          # Use schema.load (mais rápido). Se preferir migrations: rails db:create db:migrate RAILS_ENV=test
+          bundle exec rails db:schema:load RAILS_ENV=test
 
       - name: Run RSpec
         env:
           RAILS_ENV: test
         run: |
+          cd src
           bundle exec rspec --format documentation
 
-      - name: Upload RSpec results (optional)
+      - name: Upload rspec output artifact (logs)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rspec-output
-          path: tmp/**/rspec*.log || tmp/rspec-*.xml || tmp/rspec-*.txt || tmp
-
+          path: src/tmp/**, src/tmp/**/*, src/tmp || src/tmp
