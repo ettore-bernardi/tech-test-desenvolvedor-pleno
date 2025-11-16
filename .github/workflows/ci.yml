@@ -27,7 +27,6 @@ jobs:
           elif [ -f "Gemfile" ]; then
             echo "dir=." >> "$GITHUB_OUTPUT"
           else
-            # nothing found — fall back to root but warn
             echo "dir=." >> "$GITHUB_OUTPUT"
             echo "Warning: no Gemfile found in repo root or src/ — adjust workflow if your project is elsewhere."
           fi
@@ -46,19 +45,19 @@ jobs:
       - name: Cache gems
         uses: actions/cache@v4
         with:
-          # point to the Gemfile.lock inside the chosen dir if present; fallback will still produce a stable key
-          key: ${{ runner.os }}-gems-${{ steps.projectdir.outputs.dir }}-${{ hashFiles(format('{0}/Gemfile.lock', steps.projectdir.outputs.dir)) }}
+          # use a simple, safe key (hash of any Gemfile.lock in repo)
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           path: ${{ steps.projectdir.outputs.dir }}/vendor/bundle
 
       - name: Install system packages for sqlite
         run: sudo apt-get update -yqq && sudo apt-get install -yqq libsqlite3-dev sqlite3 build-essential pkg-config
 
       - name: Install bundler and gems
+        working-directory: ${{ steps.projectdir.outputs.dir }}
         run: |
           gem install bundler
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-        working-directory: ${{ steps.projectdir.outputs.dir }}
 
       - name: Create config/database.yml (sqlite for test)
         run: |
@@ -84,7 +83,6 @@ YML
           elif [ -f db/structure.sql ]; then
             bundle exec rails db:structure:load RAILS_ENV=test
           else
-            # If no schema present, try creating and migrating (safe fallback)
             bundle exec rails db:create db:migrate RAILS_ENV=test || true
           fi
 
