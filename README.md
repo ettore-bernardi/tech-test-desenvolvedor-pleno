@@ -1,7 +1,24 @@
 # Teste Técnico – Desenvolvedor Ruby on Rails (Pleno)
 
-![output](https://github.com/user-attachments/assets/22f5c00d-ccd5-448f-a257-95cee5228127)
 
+## 🚀 Rodando o Projeto
+
+### 📋 Pré-requisitos
+
+Antes de começar, você precisa ter instalado:
+
+- **Docker**
+- **Docker Compose**
+
+### ▶️ Subindo o ambiente
+
+Com tudo instalado, execute:
+
+``` 
+docker-compose up
+```
+
+![output](https://github.com/user-attachments/assets/22f5c00d-ccd5-448f-a257-95cee5228127)
 
 ## Objetivo
 O candidato deverá desenvolver uma aplicação **Ruby on Rails** para **processar arquivos `.eml` (e-mails)** e extrair informações estruturadas, salvando os resultados em banco de dados.  
