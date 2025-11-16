@@ -7,6 +7,45 @@ on:
     branches: [ main, master ]
 
 jobs:
+  rubocop:
+    name: Run RuboCop
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect project directory (src or root)
+        id: projectdir
+        run: |
+          if [ -f "src/Gemfile" ]; then
+            echo "dir=src" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=." >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.4
+          bundler-cache: false
+
+      - name: Install rubocop gems
+        working-directory: ${{ steps.projectdir.outputs.dir }}
+        run: |
+          gem install bundler
+          bundle install
+          bundle add rubocop rubocop-rails rubocop-rspec --group=development --skip-install || true
+
+      - name: Run RuboCop
+        working-directory: ${{ steps.projectdir.outputs.dir }}
+        run: |
+          bundle exec rubocop --format progress
+
   test:
     name: Run RSpec
     runs-on: ubuntu-latest
@@ -163,17 +202,13 @@ jobs:
           name: rspec-output
           path: ${{ steps.projectdir.outputs.dir }}/tmp/**
 
-  rubocop:
-    name: Run RuboCop
+  brakeman:
+    name: Run Brakeman Security Scan
     runs-on: ubuntu-latest
-    env:
-      RAILS_ENV: test
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Detect project directory (src or root)
         id: projectdir
@@ -188,16 +223,18 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1.4
-          bundler-cache: false
 
-      - name: Install rubocop gems
+      - name: Install gems
+        working-directory: ${{ steps.projectdir.outputs.dir }}
+        run: bundle install
+
+      - name: Run Brakeman
         working-directory: ${{ steps.projectdir.outputs.dir }}
         run: |
-          gem install bundler
-          bundle install
-          bundle add rubocop rubocop-rails rubocop-rspec --group=development --skip-install || true
+          bundle exec brakeman -q -o brakeman-report.json
 
-      - name: Run RuboCop
-        working-directory: ${{ steps.projectdir.outputs.dir }}
-        run: |
-          bundle exec rubocop --format progress
+      - name: Upload Brakeman report
+        uses: actions/upload-artifact@v4
+        with:
+          name: brakeman-report
+          path: ${{ steps.projectdir.outputs.dir }}/brakeman-report.json
