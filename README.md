@@ -1,5 +1,8 @@
 # Teste Técnico – Desenvolvedor Ruby on Rails (Pleno)
 
+![output](https://github.com/user-attachments/assets/22f5c00d-ccd5-448f-a257-95cee5228127)
+
+
 ## Objetivo
 O candidato deverá desenvolver uma aplicação **Ruby on Rails** para **processar arquivos `.eml` (e-mails)** e extrair informações estruturadas, salvando os resultados em banco de dados.  
 O projeto deve contemplar **arquitetura limpa, background jobs, logs persistentes e interface web**.
@@ -13,9 +16,62 @@ Você deve criar um projeto no **GitHub** utilizando **Ruby on Rails** que atend
 ### 1. Estrutura de classes
 O sistema deve conter pelo menos **4 classes principais**:
 - **Classe de processamento**: responsável por receber o arquivo `.eml` e decidir qual parser deve lidar com o e-mail (baseado no remetente).  
-- **Classe base de parser**: define a estrutura comum para os parsers.  
-- **Dois parsers específicos**: cada um capaz de extrair informações de diferentes formatos de e-mail (o candidato terá acesso aos arquivos de exemplo).  
+- **Classe base de parser**: define a estrutura comum para os parsers.
+- **Dois parsers específicos**: cada um capaz de extrair informações de diferentes formatos de e-mail (o candidato terá acesso aos arquivos de exemplo).
 
+### OBS: as classes de processamento foram colocadas dentro do service, e fo criada mais 3 classes para cadastro e processamento de emails, logs e customes
+
+```
+src/
+├── app/
+│   ├── assets/            # imagens, css/js compilados
+│   ├── channels/          # ActionCable (websockets)
+│   ├── controllers/       # controllers HTTP (API / views)
+│   │   ├── application_controller.rb
+│   │   ├── customers_controller.rb
+│   │   ├── email_logs_controller.rb
+│   │   ├── logs_controller.rb
+│   │   └── uploads_controller.rb
+│   ├── helpers/           # view helpers
+│   ├── javascript/        # assets JS / pack (webpack/webpacker/esbuild)
+│   ├── jobs/              # ActiveJob / jobs (process_email_job.rb, process_upload_job.rb)
+│   │   ├── application_job.rb ✅
+│   │   ├── process_email_job.rb ✅
+│   │   └── process_upload_job.rb ✅
+│   ├── mailers/           # mailers
+│   ├── models/            # ActiveRecord models
+│   │   ├── application_record.rb
+│   │   ├── concerns/
+│   │   ├── customer.rb ✅
+│   │   ├── email_log.rb ✅
+│   │   └── upload.rb ✅
+│   ├── services/          # lógica de domínio / serviços
+│   │   ├── email_processor.rb ✅
+│   │   └── parsers/
+│   │       ├── fornecedor_a_parser.rb ✅
+│   │       ├── parceiro_b_parser.rb ✅
+│   │       └── parser_base.rb ✅
+│   └── views/             # views e templates
+├── bin/
+├── config/                # routes, environments, initializers
+├── config.ru
+├── db/                    # migrate, schema, seeds
+├── Dockerfile
+├── docker-compose.yml
+├── Gemfile
+├── Gemfile.lock
+├── lib/
+├── log/
+├── public/
+├── procfile
+├── Rakefile
+├── README.md              # (este arquivo sugerido)
+├── spec/ or test/         # testes (RSpec ou Minitest)
+├── storage/
+├── tmp/
+└── vendor/
+
+```
 > **Importante:** a arquitetura deve permitir que seja **fácil adicionar novos parsers** no futuro, apenas criando uma nova classe, sem necessidade de modificar outras partes do sistema.
 
 ### 2. Extração de informações
@@ -56,6 +112,7 @@ O projeto deve ter uma interface web simples em Rails (HTML + Bootstrap), conten
 1. **Área para upload de arquivos `.eml`** (ao enviar, deve disparar o processamento em background).  
 2. **Tela com a listagem de customers criados**.  
 3. **Tela com os resultados dos parsers (logs)** mostrando sucessos e falhas.  
+
 
 ---
 
