@@ -1,0 +1,13 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "edf687f759ec9765bd5db185dbc615c80af77d6e7e19386fc42934e7a80307af",
+      "note": "Ignore Ruby EOL warning for CI"
+    },
+    {
+      "fingerprint": "d84924377155b41e094acae7404ec2e521629d86f97b0ff628e3d1b263f8101c",
+      "note": "Ignore Rails EOL warning for CI"
+    }
+  ],
+  "ignore_file_hash": "auto"
+}
