@@ -34,7 +34,7 @@ jobs:
       - name: Show chosen dir
         run: |
           echo "Using project dir: ${{ steps.projectdir.outputs.dir }}"
-          ls -la ${{ steps.projectdir.outputs.dir }} || true
+          ls -la "${{ steps.projectdir.outputs.dir }}" || true
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -45,7 +45,6 @@ jobs:
       - name: Cache gems
         uses: actions/cache@v4
         with:
-          # use a simple, safe key (hash of any Gemfile.lock in repo)
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           path: ${{ steps.projectdir.outputs.dir }}/vendor/bundle
 
@@ -59,16 +58,16 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
-      - name: Create config/database.yml (sqlite for test)
+      - name: Create config/database.yml (sqlite for test) using printf (avoids heredoc indentation issues)
         run: |
           mkdir -p "${{ steps.projectdir.outputs.dir }}/config"
-          cat > "${{ steps.projectdir.outputs.dir }}/config/database.yml" <<'YML'
-test:
-  adapter: sqlite3
-  database: db/test.sqlite3
-  pool: 5
-  timeout: 5000
-YML
+          printf '%s\n' \
+            "test:" \
+            "  adapter: sqlite3" \
+            "  database: db/test.sqlite3" \
+            "  pool: 5" \
+            "  timeout: 5000" \
+            > "${{ steps.projectdir.outputs.dir }}/config/database.yml"
 
       - name: Ensure db folder exists
         run: mkdir -p "${{ steps.projectdir.outputs.dir }}/db"
