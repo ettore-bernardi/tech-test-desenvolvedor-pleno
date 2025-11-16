@@ -49,6 +49,7 @@ jobs:
   test:
     name: Run RSpec
     runs-on: ubuntu-latest
+    needs: rubocop
     env:
       RAILS_ENV: test
 
