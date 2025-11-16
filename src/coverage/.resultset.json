@@ -1,0 +1,732 @@
+{
+  "RSpec": {
+    "coverage": {
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/helpers/application_helper.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/services/email_processor.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          0,
+          null,
+          null,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          0,
+          0,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          2,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {
+          "[:unless, 0, 32, 4, 35, 7]": {
+            "[:else, 1, 32, 4, 35, 7]": 1,
+            "[:then, 2, 33, 6, 34, 72]": 0
+          },
+          "[:if, 3, 42, 6, 45, 9]": {
+            "[:then, 4, 43, 8, 44, 72]": 1,
+            "[:else, 5, 42, 6, 45, 9]": 0
+          },
+          "[:if, 6, 40, 4, 51, 7]": {
+            "[:then, 7, 42, 6, 47, 94]": 1,
+            "[:else, 8, 49, 6, 50, 80]": 0
+          },
+          "[:\"&.\", 9, 66, 4, 66, 65]": {
+            "[:then, 10, 66, 4, 66, 65]": 1,
+            "[:else, 11, 66, 4, 66, 65]": 0
+          }
+        }
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/services/parsers/fornecedor_a_parser.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/services/parsers/parser_base.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          0,
+          0,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          3,
+          3,
+          3,
+          3,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 19, 8, 19, 55]": {
+            "[:then, 1, 19, 15, 19, 27]": 0,
+            "[:else, 2, 19, 30, 19, 55]": 0
+          },
+          "[:if, 3, 17, 6, 22, 9]": {
+            "[:then, 4, 18, 8, 19, 55]": 0,
+            "[:else, 5, 21, 8, 21, 26]": 1
+          },
+          "[:if, 6, 28, 8, 30, 11]": {
+            "[:then, 7, 29, 10, 29, 32]": 3,
+            "[:else, 8, 28, 8, 30, 11]": 0
+          }
+        }
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/services/parsers/parceiro_b_parser.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {
+          "[:\"&.\", 0, 8, 15, 8, 67]": {
+            "[:then, 1, 8, 15, 8, 67]": 0,
+            "[:else, 2, 8, 15, 8, 67]": 0
+          },
+          "[:\"&.\", 3, 8, 15, 8, 83]": {
+            "[:then, 4, 8, 15, 8, 83]": 0,
+            "[:else, 5, 8, 15, 8, 83]": 0
+          },
+          "[:\"&.\", 6, 8, 15, 8, 90]": {
+            "[:then, 7, 8, 15, 8, 90]": 0,
+            "[:else, 8, 8, 15, 8, 90]": 0
+          },
+          "[:\"&.\", 9, 9, 15, 9, 60]": {
+            "[:then, 10, 9, 15, 9, 60]": 0,
+            "[:else, 11, 9, 15, 9, 60]": 0
+          }
+        }
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/models/upload.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 16, 4, 16, 25]": {
+            "[:then, 1, 16, 4, 16, 10]": 0,
+            "[:else, 2, 16, 4, 16, 25]": 0
+          },
+          "[:unless, 3, 18, 4, 18, 31]": {
+            "[:else, 4, 18, 4, 18, 31]": 0,
+            "[:then, 5, 18, 4, 18, 10]": 0
+          },
+          "[:if, 6, 27, 6, 31, 9]": {
+            "[:then, 7, 28, 8, 28, 17]": 0,
+            "[:else, 8, 30, 8, 30, 15]": 0
+          },
+          "[:unless, 9, 36, 4, 36, 59]": {
+            "[:else, 10, 36, 4, 36, 59]": 0,
+            "[:then, 11, 36, 4, 36, 10]": 0
+          }
+        }
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/models/application_record.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/models/email_log.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/controllers/uploads_controller.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          3,
+          3,
+          null,
+          3,
+          null,
+          null,
+          null,
+          null,
+          null,
+          3,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          4,
+          4,
+          null,
+          null,
+          3,
+          null,
+          2,
+          1,
+          1,
+          1,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          3,
+          3,
+          3,
+          null,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          0,
+          null,
+          null,
+          0,
+          0,
+          null,
+          null,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          null
+        ],
+        "branches": {
+          "[:unless, 0, 15, 4, 15, 107]": {
+            "[:else, 1, 15, 4, 15, 107]": 1,
+            "[:then, 2, 15, 4, 15, 85]": 0
+          },
+          "[:\"&.\", 3, 54, 21, 54, 35]": {
+            "[:then, 4, 54, 21, 54, 35]": 0,
+            "[:else, 5, 54, 21, 54, 35]": 0
+          },
+          "[:unless, 6, 68, 4, 68, 103]": {
+            "[:else, 7, 68, 4, 68, 103]": 3,
+            "[:then, 8, 68, 4, 68, 89]": 1
+          },
+          "[:if, 9, 86, 6, 86, 119]": {
+            "[:then, 10, 86, 6, 86, 82]": 3,
+            "[:else, 11, 86, 6, 86, 119]": 0
+          },
+          "[:if, 12, 95, 4, 95, 72]": {
+            "[:then, 13, 95, 4, 95, 14]": 0,
+            "[:else, 14, 95, 4, 95, 72]": 0
+          },
+          "[:if, 15, 101, 6, 101, 41]": {
+            "[:then, 16, 101, 6, 101, 17]": 0,
+            "[:else, 17, 101, 6, 101, 41]": 0
+          },
+          "[:if, 18, 108, 6, 108, 59]": {
+            "[:then, 19, 108, 6, 108, 26]": 0,
+            "[:else, 20, 108, 6, 108, 59]": 0
+          }
+        }
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/controllers/application_controller.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/jobs/process_upload_job.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null
+        ],
+        "branches": {
+          "[:\"&.\", 0, 50, 98, 50, 120]": {
+            "[:then, 1, 50, 98, 50, 120]": 0,
+            "[:else, 2, 50, 98, 50, 120]": 0
+          },
+          "[:\"&.\", 3, 50, 98, 50, 132]": {
+            "[:then, 4, 50, 98, 50, 132]": 0,
+            "[:else, 5, 50, 98, 50, 132]": 0
+          },
+          "[:unless, 6, 9, 4, 9, 24]": {
+            "[:else, 7, 9, 4, 9, 24]": 0,
+            "[:then, 8, 9, 4, 9, 10]": 0
+          },
+          "[:if, 9, 11, 4, 11, 71]": {
+            "[:then, 10, 11, 4, 11, 40]": 0,
+            "[:else, 11, 11, 4, 11, 71]": 0
+          },
+          "[:unless, 12, 21, 8, 21, 85]": {
+            "[:else, 13, 21, 8, 21, 85]": 0,
+            "[:then, 14, 21, 8, 21, 13]": 0
+          },
+          "[:if, 15, 33, 12, 39, 15]": {
+            "[:then, 16, 35, 16, 37, 19]": 0,
+            "[:else, 17, 33, 12, 39, 15]": 0
+          },
+          "[:if, 18, 25, 8, 42, 11]": {
+            "[:then, 19, 26, 10, 29, 15]": 0,
+            "[:else, 20, 31, 10, 40, 81]": 0
+          },
+          "[:if, 21, 48, 4, 48, 69]": {
+            "[:then, 22, 48, 4, 48, 38]": 0,
+            "[:else, 23, 48, 4, 48, 69]": 0
+          }
+        }
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/jobs/application_job.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          0,
+          null,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/models/customer.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/channels/application_cable/channel.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/channels/application_cable/connection.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/controllers/customers_controller.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/controllers/email_logs_controller.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/controllers/logs_controller.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/jobs/process_email_job.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/home/assis/Downloads/pooor/tech-test-desenvolvedor-pleno/src/app/mailers/application_mailer.rb": {
+        "lines": [
+          null,
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      }
+    },
+    "timestamp": 1763261416
+  }
+}
