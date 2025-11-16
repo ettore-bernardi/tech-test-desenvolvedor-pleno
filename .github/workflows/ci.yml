@@ -2,11 +2,16 @@ name: CI
 
 on:
   push:
+    branches: [ main, master ]
   pull_request:
+    branches: [ main, master ]
 
 jobs:
   test:
+    name: Run RSpec
     runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
 
     steps:
       - name: Checkout repository
@@ -14,64 +19,92 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Show workspace (debug)
-        run: |
-          echo "Workspace: $GITHUB_WORKSPACE"
-          ls -la
-          echo "Contents of root:"
-          for f in *; do echo " - $f"; done
-        # keep output short by default; this helps see if src exists
-
-      # Decide working directory: use src if present, else use root
-      - name: Set project dir
+      - name: Detect project directory (src or root)
         id: projectdir
         run: |
-          if [ -d "src" ]; then
+          if [ -f "src/Gemfile" ]; then
             echo "dir=src" >> "$GITHUB_OUTPUT"
-          else
+          elif [ -f "Gemfile" ]; then
             echo "dir=." >> "$GITHUB_OUTPUT"
+          else
+            # nothing found — fall back to root but warn
+            echo "dir=." >> "$GITHUB_OUTPUT"
+            echo "Warning: no Gemfile found in repo root or src/ — adjust workflow if your project is elsewhere."
           fi
 
       - name: Show chosen dir
-        run: echo "Using project dir: ${{ steps.projectdir.outputs.dir }}"
+        run: |
+          echo "Using project dir: ${{ steps.projectdir.outputs.dir }}"
+          ls -la ${{ steps.projectdir.outputs.dir }} || true
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
-          bundler-cache: true
+          ruby-version: 3.1
+          bundler-cache: false
 
-      - name: Install sqlite dev package (needed for building native sqlite support)
-        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+      - name: Cache gems
+        uses: actions/cache@v4
+        with:
+          # point to the Gemfile.lock inside the chosen dir if present; fallback will still produce a stable key
+          key: ${{ runner.os }}-gems-${{ steps.projectdir.outputs.dir }}-${{ hashFiles(format('{0}/Gemfile.lock', steps.projectdir.outputs.dir)) }}
+          path: ${{ steps.projectdir.outputs.dir }}/vendor/bundle
 
-      - name: Install bundler (explicit)
-        run: gem install bundler
+      - name: Install system packages for sqlite
+        run: sudo apt-get update -yqq && sudo apt-get install -yqq libsqlite3-dev sqlite3 build-essential pkg-config
 
-      - name: Install dependencies
+      - name: Install bundler and gems
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+        working-directory: ${{ steps.projectdir.outputs.dir }}
+
+      - name: Create config/database.yml (sqlite for test)
+        run: |
+          mkdir -p "${{ steps.projectdir.outputs.dir }}/config"
+          cat > "${{ steps.projectdir.outputs.dir }}/config/database.yml" <<'YML'
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
+YML
+
+      - name: Ensure db folder exists
+        run: mkdir -p "${{ steps.projectdir.outputs.dir }}/db"
+
+      - name: Prepare test DB (load schema)
+        env:
+          RAILS_ENV: test
         working-directory: ${{ steps.projectdir.outputs.dir }}
         run: |
-          if [ -f Gemfile ]; then
-            bundle install --jobs 4 --retry 3
+          if [ -f db/schema.rb ]; then
+            bundle exec rails db:schema:load RAILS_ENV=test
+          elif [ -f db/structure.sql ]; then
+            bundle exec rails db:structure:load RAILS_ENV=test
           else
-            echo "No Gemfile found in $PWD, skipping bundle install"
+            # If no schema present, try creating and migrating (safe fallback)
+            bundle exec rails db:create db:migrate RAILS_ENV=test || true
           fi
 
-      - name: Prepare DB (if rails project)
+      - name: Run RSpec
+        env:
+          RAILS_ENV: test
         working-directory: ${{ steps.projectdir.outputs.dir }}
         run: |
-          if [ -f Rakefile ]; then
-            bundle exec rake db:create db:migrate --trace || true
-          else
-            echo "No Rakefile found, skipping DB setup"
-          fi
-
-      - name: Run tests
-        working-directory: ${{ steps.projectdir.outputs.dir }}
-        run: |
-          if [ -f spec/rails_helper.rb ] || [ -f spec/spec_helper.rb ]; then
+          if [ -d spec ]; then
             bundle exec rspec --format documentation
           elif [ -f Rakefile ]; then
             bundle exec rake test || bundle exec rake
           else
-            echo "No tests detected (no spec/ or Rakefile)."
+            echo "No tests found (no spec/ directory)."
           fi
+
+      - name: Upload rspec output artifact (logs)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rspec-output
+          path: ${{ steps.projectdir.outputs.dir }}/tmp/**
+
