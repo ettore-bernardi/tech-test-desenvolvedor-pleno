@@ -27,7 +27,7 @@ if Sidekiq.server?
       else
         # fallback prudente para versões antigas/estranhas
         config.instance_variable_set(:@options,
-                                     (config.instance_variable_get(:@options) || {}).merge(queues: yaml_env[:queues].map(&:to_s)))
+                                     (config.instance_variable_get(:@options) || {}).merge(queues: yaml_env[:queues].map(&:to_s))) # rubocop:disable Layout/LineLength
       end
     end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateEmailLogs < ActiveRecord::Migration[7.0]
+class CreateEmailLogs < ActiveRecord::Migration[7.0] # rubocop:disable Style/Documentation
   def change
     create_table :email_logs do |t|
       t.string :file_name

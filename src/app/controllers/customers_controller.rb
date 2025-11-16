@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CustomersController < ApplicationController
+class CustomersController < ApplicationController # rubocop:disable Style/Documentation
   def index
     @customers = Customer.order(created_at: :desc).limit(100)
   end

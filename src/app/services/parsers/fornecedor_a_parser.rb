@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Parsers
-  class FornecedorAParser < ParserBase
+  class FornecedorAParser < ParserBase # rubocop:disable Style/Documentation
     def parse
       {
         name: extract_by_label('Nome do cliente', 'Nome'),

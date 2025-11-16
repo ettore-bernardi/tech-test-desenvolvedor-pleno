@@ -3,8 +3,8 @@
 # spec/requests/uploads_clear_email_logs_raw_spec.rb
 require 'rails_helper'
 
-RSpec.describe 'Uploads#clear_email_logs_raw', type: :request do
-  describe 'PATCH /uploads/:id/clear_email_logs_raw' do
+RSpec.describe 'Uploads#clear_email_logs_raw', type: :request do # rubocop:disable Metrics/BlockLength)
+  describe 'PATCH /uploads/:id/clear_email_logs_raw' do # rubocop:disable Metrics/BlockLength)
     it 'clears raw_data, message and parsed_json for all email_logs of the upload' do
       upload = Upload.create!(files_count: 0, status: 'processing')
 

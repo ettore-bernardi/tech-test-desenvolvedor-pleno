@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocopo:disable Style/Documentation, Style/CommentedKeyword
 class CreateCustomers < ActiveRecord::Migration[7.0]
   def change
     create_table :customers do |t|

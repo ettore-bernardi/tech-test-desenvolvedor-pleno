@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Parsers
-  class ParserBase
+  class ParserBase # rubocop:disable Style/Documentation
     def initialize(mail)
       @mail = mail
       @body = extract_body

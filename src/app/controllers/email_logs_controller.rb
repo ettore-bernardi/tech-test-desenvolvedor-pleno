@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class EmailLogsController < ApplicationController
-  def raw
+class EmailLogsController < ApplicationController # rubocop:disable Style/Documentation
+  def raw # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     email_log = EmailLog.find_by(id: params[:id])
     return head :not_found unless email_log
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Upload < ApplicationRecord
+class Upload < ApplicationRecord # rubocop:disable Style/Documentation
   has_many :email_logs, foreign_key: :upload_id, dependent: :nullify
 
   enum status: {

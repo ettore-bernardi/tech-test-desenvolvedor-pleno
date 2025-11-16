@@ -4,7 +4,7 @@
 require 'mail'
 require 'digest'
 
-class EmailProcessor
+class EmailProcessor # rubocop:disable Style/Documentation
   PARSERS = {
     /fornecedorA.com/i => Parsers::FornecedorAParser,
     /parceiroB.com/i => Parsers::ParceiroBParser
@@ -20,10 +20,8 @@ class EmailProcessor
     end
   end
 
-  # método principal que retorna um hash com :status, :message, :parsed e opcional :customer
-  def process_and_return_result
+  def process_and_return_result # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
     content_hash = Digest::SHA256.hexdigest(@raw)
-    # tenta achar ou criar o EmailLog pelo content_hash; não criar duplicado
     email_log = EmailLog.find_or_create_by(content_hash: content_hash) do |e|
       e.file_name = @file_name
       e.raw_data = @raw

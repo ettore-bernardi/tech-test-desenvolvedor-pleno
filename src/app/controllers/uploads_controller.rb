@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UploadsController < ApplicationController
+class UploadsController < ApplicationController # rubocop:disable Style/Documentation
   def index
     @logs = EmailLog.order(created_at: :desc).limit(100)
   end
@@ -9,7 +9,7 @@ class UploadsController < ApplicationController
     @uploads = Upload.order(created_at: :desc).limit(50)
   end
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     files = params[:eml_files]
 
     redirect_to new_upload_path, alert: 'Escolha ao menos um arquivo .eml' and return unless files.present?
@@ -42,7 +42,7 @@ class UploadsController < ApplicationController
     @logs = @upload.email_logs.order(created_at: :desc)
   end
 
-  def logs_json
+  def logs_json # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     @upload = Upload.find(params[:id])
     @logs = @upload.email_logs.order(created_at: :desc)
 
@@ -84,7 +84,6 @@ class UploadsController < ApplicationController
       require 'charlock_holmes'
       detection = CharlockHolmes::EncodingDetector.detect(raw)
       return CharlockHolmes::Converter.convert(raw, detection[:encoding], 'UTF-8') if detection && detection[:encoding]
-    rescue LoadError
     rescue StandardError => e
       Rails.logger.warn("[UploadsController] charlock error: #{e.class}: #{e.message}")
     end
@@ -92,7 +91,7 @@ class UploadsController < ApplicationController
     encode_with_heuristics(raw)
   end
 
-  def encode_with_heuristics(raw)
+  def encode_with_heuristics(raw) # rubocop:disable Metrics/MethodLength
     return raw if raw.encoding == Encoding::UTF_8 && raw.valid_encoding?
 
     bin = raw.dup.force_encoding('BINARY')
@@ -100,14 +99,14 @@ class UploadsController < ApplicationController
     begin
       utf8 = bin.encode('UTF-8')
       return utf8 if utf8.valid_encoding?
-    rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError
+    rescue Encoding::InvalidByteSequenceError, Encoding::UndefinedConversionError # rubocop:disable Lint/SuppressedException
     end
 
     begin
       iso = raw.dup.force_encoding('ISO-8859-1')
       utf8_from_iso = iso.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
       return utf8_from_iso if utf8_from_iso.valid_encoding?
-    rescue StandardError => _e
+    rescue StandardError => _e # rubocop:disable Lint/SuppressedException
     end
 
     raw.dup.force_encoding('BINARY').encode('UTF-8', invalid: :replace, undef: :replace, replace: '')

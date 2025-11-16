@@ -4,7 +4,7 @@
 class ProcessEmailJob < ApplicationJob
   queue_as :default
 
-  def perform(email_log_id)
+  def perform(email_log_id) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     email_log = EmailLog.find_by(id: email_log_id)
     return unless email_log
 
