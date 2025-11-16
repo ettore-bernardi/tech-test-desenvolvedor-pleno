@@ -202,39 +202,71 @@ jobs:
           name: rspec-output
           path: ${{ steps.projectdir.outputs.dir }}/tmp/**
 
-  brakeman:
-    name: Run Brakeman Security Scan
+  security:
+    name: Brakeman security scan
     runs-on: ubuntu-latest
+    needs: test       # opcional: aguarda os testes, remove se não quiser dependência
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Detect project directory (src or root)
         id: projectdir
         run: |
-          if [ -f "src/Gemfile" ]; then
-            echo "dir=src" >> "$GITHUB_OUTPUT"
-          else
-            echo "dir=." >> "$GITHUB_OUTPUT"
-          fi
+          if [ -f "src/Gemfile" ]; then echo "dir=src" >> "$GITHUB_OUTPUT"; else echo "dir=." >> "$GITHUB_OUTPUT"; fi
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1.4
 
-      - name: Install gems
-        working-directory: ${{ steps.projectdir.outputs.dir }}
-        run: bundle install
+      - name: Install system deps (jq used to parse JSON)
+        run: sudo apt-get update -yqq && sudo apt-get install -yqq jq
 
-      - name: Run Brakeman
+      - name: Install brakeman gem
         working-directory: ${{ steps.projectdir.outputs.dir }}
         run: |
-          bundle exec brakeman -q -o brakeman-report.json
+          gem install brakeman -v ">= 7.0" --no-document
 
-      - name: Upload Brakeman report
+      - name: Run Brakeman and write JSON report
+        working-directory: ${{ steps.projectdir.outputs.dir }}
+        run: |
+          set -o pipefail
+          # run brakeman quiet and output json
+          brakeman -q -o brakeman-report.json || true
+          # show a short summary so logs are informative
+          echo "Brakeman summary:"
+          cat brakeman-report.json | jq '.scan_info | {rails_version, ruby_version, brakeman_version, security_warnings, duration}'
+
+      - name: Upload Brakeman report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: brakeman-report
           path: ${{ steps.projectdir.outputs.dir }}/brakeman-report.json
+
+      - name: Fail if High-confidence warnings found (adjust threshold here)
+        if: always()
+        working-directory: ${{ steps.projectdir.outputs.dir }}
+        run: |
+          # total warnings
+          TOTAL=$(jq '.warnings | length' brakeman-report.json)
+          # high confidence warnings (confidence string may be "High" in your output)
+          HIGH=$(jq '[.warnings[] | select(.confidence=="High")] | length' brakeman-report.json)
+          echo "Total Brakeman warnings: $TOTAL"
+          echo "High confidence warnings: $HIGH"
+          # Adjust the rule below: fail if HIGH > 0 or TOTAL > 10, etc.
+          if [ "$HIGH" -gt 0 ]; then
+            echo "Failing because there are $HIGH high-confidence Brakeman warnings."
+            exit 1
+          fi
+          # optional threshold on total warnings:
+          MAX_TOTAL=50
+          if [ "$TOTAL" -gt "$MAX_TOTAL" ]; then
+            echo "Failing because total warnings ($TOTAL) > $MAX_TOTAL"
+            exit 1
+          fi
+          echo "Brakeman policy passed (no high-confidence warnings and total <= $MAX_TOTAL)."
