@@ -11,8 +11,6 @@ jobs:
     name: Run RSpec
     runs-on: ubuntu-latest
 
-    # Se seu app está dentro de src/, definimos working-directory para todos os passos.
-    # Se NÃO estiver em src, remova todo o bloco "defaults" abaixo.
     defaults:
       run:
         working-directory: src
@@ -33,7 +31,6 @@ jobs:
       - name: Cache gems
         uses: actions/cache@v4
         with:
-          # chave baseada no Gemfile.lock dentro de src/
           key: ${{ runner.os }}-gems-${{ hashFiles('src/Gemfile.lock') }}
           path: src/vendor/bundle
 
@@ -66,7 +63,6 @@ jobs:
           RAILS_ENV: test
         run: |
           cd src
-          # Use schema.load (mais rápido). Se preferir migrations: rails db:create db:migrate RAILS_ENV=test
           bundle exec rails db:schema:load RAILS_ENV=test
 
       - name: Run RSpec
