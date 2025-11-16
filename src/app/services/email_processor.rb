@@ -38,7 +38,6 @@ class EmailProcessor # rubocop:disable Style/Documentation
     result = parser.parse # espera um hash
 
     if valid_result?(result)
-      # Exemplo: criar customer (se necessário)
       if defined?(Customer)
         customer = Customer.create!(name: result[:name], email: result[:email], phone: result[:phone],
                                     product_code: result[:product_code])
@@ -70,7 +69,6 @@ class EmailProcessor # rubocop:disable Style/Documentation
     res && res[:name].to_s.strip != '' && res[:email].to_s.strip != ''
   end
 
-  # atualiza o email_log já existente (em vez de criar outro)
   def update_log_with(email_log, status, message, parsed)
     email_log.update!(
       status: status,

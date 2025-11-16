@@ -68,7 +68,7 @@ class UploadsController < ApplicationController # rubocop:disable Style/Document
     return render json: { success: false, error: 'Upload not found' }, status: :not_found unless upload
 
     begin
-      upload.email_logs.update_all(raw_data: nil, message: nil, parsed_json: {})
+      upload.email_logs.update_all(raw_data: nil, message: nil)
 
       render json: { success: true, cleared: upload.email_logs.count }
     rescue StandardError => e
