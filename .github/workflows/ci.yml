@@ -36,11 +36,57 @@ jobs:
           echo "Using project dir: ${{ steps.projectdir.outputs.dir }}"
           ls -la "${{ steps.projectdir.outputs.dir }}" || true
 
-      - name: Set up Ruby
+      - name: Set up Ruby (match Gemfile's declared version)
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1
+          ruby-version: 3.1.4
           bundler-cache: false
+
+      - name: Install system packages for sqlite
+        run: sudo apt-get update -yqq && sudo apt-get install -yqq libsqlite3-dev sqlite3 build-essential pkg-config
+
+      - name: Detect Bundler version from Gemfile.lock (if present)
+        id: bundlerv
+        run: |
+          DIR="${{ steps.projectdir.outputs.dir }}"
+          if [ -f "$DIR/Gemfile.lock" ]; then
+            # get version under "BUNDLED WITH" (last non-empty line after the marker)
+            VER=$(awk '/^BUNDLED WITH/{getline; print $1}' "$DIR/Gemfile.lock" | tr -d ' \t\r\n')
+            if [ -n "$VER" ]; then
+              echo "bundler_version=$VER" >> "$GITHUB_OUTPUT"
+            else
+              echo "bundler_version=" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "bundler_version=" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Detected bundler version: ${{ steps.bundlerv.outputs.bundler_version }}"
+
+      - name: Install correct Bundler (if detected) or latest
+        run: |
+          VER="${{ steps.bundlerv.outputs.bundler_version }}"
+          if [ -n "$VER" ]; then
+            echo "Installing bundler $VER"
+            gem install bundler -v "$VER"
+          else
+            echo "No bundler version detected in Gemfile.lock — installing latest bundler"
+            gem install bundler
+          fi
+
+      - name: Check for duplicate rspec-rails entries (quick warning)
+        run: |
+          DIR="${{ steps.projectdir.outputs.dir }}"
+          if [ -f "$DIR/Gemfile" ]; then
+            COUNT=$(grep -E "^\s*gem ['\"]rspec-rails['\"]" -n "$DIR/Gemfile" | wc -l || true)
+            if [ "$COUNT" -gt 1 ]; then
+              echo "ERROR: rspec-rails appears $COUNT times in $DIR/Gemfile. Remove duplicates and keep a single declaration."
+              exit 1
+            else
+              echo "rspec-rails occurrences in Gemfile: $COUNT"
+            fi
+          else
+            echo "No Gemfile found to check duplicates."
+          fi
 
       - name: Cache gems
         uses: actions/cache@v4
@@ -48,17 +94,29 @@ jobs:
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           path: ${{ steps.projectdir.outputs.dir }}/vendor/bundle
 
-      - name: Install system packages for sqlite
-        run: sudo apt-get update -yqq && sudo apt-get install -yqq libsqlite3-dev sqlite3 build-essential pkg-config
-
-      - name: Install bundler and gems
+      - name: Install gems (using pinned bundler)
         working-directory: ${{ steps.projectdir.outputs.dir }}
         run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          DIR="."
+          if [ -f Gemfile.lock ]; then
+            # prefer explicit bundler version if detected
+            BVER="${{ steps.bundlerv.outputs.bundler_version }}"
+            if [ -n "$BVER" ]; then
+              echo "Using bundle _${BVER}_ install"
+              bundle _${BVER}_ config path vendor/bundle
+              bundle _${BVER}_ install --jobs 4 --retry 3
+            else
+              echo "Using default bundle install"
+              bundle config path vendor/bundle
+              bundle install --jobs 4 --retry 3
+            fi
+          else
+            echo "No Gemfile.lock found, running bundle install"
+            bundle config path vendor/bundle
+            bundle install --jobs 4 --retry 3
+          fi
 
-      - name: Create config/database.yml (sqlite for test) using printf (avoids heredoc indentation issues)
+      - name: Create config/database.yml (sqlite for test)
         run: |
           mkdir -p "${{ steps.projectdir.outputs.dir }}/config"
           printf '%s\n' \
