@@ -1,0 +1,15 @@
+<h1>Logs de processamento</h1>
+<table class="table table-bordered">
+  <thead><tr><th>Status</th><th>Arquivo</th><th>Mensagem</th><th>Detalhes</th><th>Quando</th></tr></thead>
+  <tbody>
+    <% @logs.each do |l| %>
+      <tr>
+        <td><%= l.status %></td>
+        <td><%= l.uploaded_email&.file_name %></td>
+        <td><%= l.message %></td>
+        <td><pre style="white-space:pre-wrap"><%= JSON.pretty_generate(l.parsed_json || {}) rescue l.parsed_json %></pre></td>
+        <td><%= l.created_at.strftime('%F %T') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

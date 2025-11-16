@@ -1,0 +1,15 @@
+<h1>Customers</h1>
+<table class="table table-striped">
+  <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Produto</th><th>Criado</th></tr></thead>
+  <tbody>
+    <% @customers.each do |c| %>
+      <tr>
+        <td><%= c.name %></td>
+        <td><%= c.email %></td>
+        <td><%= c.phone %></td>
+        <td><%= c.product_code %></td>
+        <td><%= c.created_at.strftime('%F %T') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,136 @@
+<h1 class="mb-4">Upload de arquivos .eml</h1>
+
+<!-- Formulário de Upload -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Novo Upload</h5>
+    <form action="<%= uploads_path %>" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+
+      <div class="mb-3">
+        <label class="form-label">Escolha os arquivos .eml</label>
+        <input class="form-control" type="file" name="eml_files[]" accept=".eml" multiple required>
+      </div>
+
+      <button class="btn btn-primary" type="submit">Enviar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Listagem de Uploads -->
+<h2 class="mb-3">Listagem de Uploads</h2>
+
+<% if @uploads.present? %>
+  <table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th class="text-center">ID</th>
+        <th class="text-center">Status</th>
+        <th>Quantidade de Arquivos</th>
+        <th class="text-center">Criado em</th>
+        <th class="text-center">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @uploads.each do |upload| %>
+        <tr style="cursor: pointer;" onclick="window.location.href='<%= upload_path(upload) %>'">
+          <td class="text-center">
+            <strong>#<%= upload.id %></strong>
+          </td>
+
+          <td class="text-center">
+            <% case upload.status %>
+            <% when "finished" %>
+              <span class="badge bg-success">Concluído</span>
+            <% when "processing" %>
+              <span class="badge bg-warning">Processando</span>
+            <% when "failed" %>
+              <span class="badge bg-danger">Falhou</span>
+            <% else %>
+              <span class="badge bg-secondary">Pendente</span>
+            <% end %>
+          </td>
+
+          <td>
+            <%= upload.files_count %> arquivo(s)
+          </td>
+
+          <td class="text-center">
+            <%= upload.created_at.strftime('%d/%m/%Y %H:%M:%S') %>
+          </td>
+
+          <!-- AÇÕES: botão Excluir raw de todos -->
+          <td class="text-center">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger clear-upload-raw-btn"
+              data-upload-id="<%= upload.id %>"
+              onclick="event.stopPropagation();"
+              title="Remover raw_data de todos os EmailLogs deste upload">
+              <span class="btn-label">Excluir raw</span>
+              <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+            </button>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info">Nenhum upload encontrado.</div>
+<% end %>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.clear-upload-raw-btn').forEach(btn => {
+    btn.addEventListener('click', async function (event) {
+      event.stopPropagation();
+
+      const uploadId = btn.getAttribute('data-upload-id');
+      if (!uploadId) return;
+
+      if (!confirm('Tem certeza que deseja remover o raw de TODOS os logs deste upload? Esta ação NÃO pode ser desfeita.')) {
+        return;
+      }
+
+      const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+      const csrfToken = tokenMeta ? tokenMeta.content : '';
+
+      const spinner = btn.querySelector('.spinner-border');
+      const label = btn.querySelector('.btn-label') || btn;
+      btn.disabled = true;
+      if (spinner) spinner.classList.remove('d-none');
+      if (label) label.textContent = 'Excluindo...';
+
+      try {
+        const resp = await fetch(`/uploads/${uploadId}/clear_email_logs_raw`, {
+          method: 'PATCH',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+          },
+          credentials: 'same-origin',
+          body: null
+        });
+
+        const data = await resp.json().catch(() => ({}));
+
+        if (!resp.ok || !data.success) {
+          const err = data.error || `HTTP ${resp.status}`;
+          alert('Erro ao excluir raws: ' + err);
+          return;
+        }
+
+        if (label) label.textContent = 'Excluído';
+      } catch (err) {
+        console.error('Erro ao limpar raws do upload:', err);
+        alert('Erro ao excluir raws. Veja console para mais informações.');
+      } finally {
+        if (spinner) spinner.classList.add('d-none');
+      }
+    });
+  });
+});
+</script>
+
