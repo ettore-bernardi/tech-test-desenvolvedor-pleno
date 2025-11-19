@@ -40,6 +40,21 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12-alpine
+        env:
+          POSTGRES_USER: rails
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: email_parser_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,11 +68,22 @@ jobs:
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
 
+      - name: Setup database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
+        env:
+          DATABASE_URL: "postgres://rails:password@localhost:5432/email_parser_test"
+          RAILS_ENV: test
+
       - name: Run RSpec
         run: bundle exec rspec
+        env:
+          DATABASE_URL: "postgres://rails:password@localhost:5432/email_parser_test"
+          RAILS_ENV: test
 
       - name: Run RuboCop
         run: bin/rubocop -f github
 
       - name: Run erb_lint
-        run: bundle exec erb_lint --lint-all
+        run: bundle exec erblint --lint-all
