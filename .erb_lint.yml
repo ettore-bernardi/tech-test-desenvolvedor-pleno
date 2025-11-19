@@ -1,0 +1,26 @@
+---
+EnableDefaultLinters: true
+exclude:
+  - node_modules/**/*
+  - vendor/**/*
+  - lib/templates/**/*
+linters:
+  ErbSafety:
+    enabled: true
+  RequireInputAutocomplete:
+    enabled: false
+  Rubocop:
+    enabled: true
+    rubocop_config:
+      Layout/InitialIndentation:
+        Enabled: false
+      Layout/TrailingEmptyLines:
+        Enabled: false
+      Lint/UselessAssignment:
+        Enabled: false
+      Naming/FileName:
+        Enabled: false
+      Rails/OutputSafety:
+        Enabled: false
+      inherit_from:
+        - .rubocop.yml

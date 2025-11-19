@@ -50,6 +50,14 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Lint code for consistent style
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+
+      - name: Run RSpec
+        run: bundle exec rspec
+
+      - name: Run RuboCop
         run: bin/rubocop -f github
 
+      - name: Run erb_lint
+        run: bundle exec erb_lint --lint-all
