@@ -33,6 +33,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "rswag-specs"
   gem "pry-rails"
+  gem "simplecov", require: false, group: :test
 end
 
 group :development do
